@@ -42,6 +42,7 @@ const WithoutLib = () => {
 
   const SelectAdminCircle = (e) => {
     e.stopPropagation();
+    console.log(hotSpots.areas);
     setAdminSelectedArea(hotSpots.areas.find((spot) => spot.id == e.target.id));
     setAdminSpotMenuOpen(false);
     setAdminSpotMenuOpen(true);
@@ -56,8 +57,9 @@ const WithoutLib = () => {
   };
   const ClientAreaClicked = () => {
     setClientSpotMenuOpen(false);
-  }
+  };
   const PickCircle = (e) => {
+    e.dataTransfer.effectAllowed = "move";
     setMoveCircle(hotSpots.areas.find((spot) => spot.id == e.target.id));
   };
 
@@ -126,7 +128,7 @@ const WithoutLib = () => {
       };
     });
     let renderingHotSpots = {
-      name: "zhopich",
+      name: clientHotSpots.name,
       areas: renderNewHotSpots,
     };
     setClientHotSpots(renderingHotSpots);
@@ -141,6 +143,7 @@ const WithoutLib = () => {
         style={{
           backgroundImage: `url("https://latqvbedpllwqek.skdesign.ru/wp-content/uploads/2022/06/224239_289526484_348993037199526_6213266534771725691_n.jpg")`,
         }}
+        onDragOver={(e) => e.preventDefault()}
       >
         {hotSpots.areas.map((area) => (
           <div key={area.id}>
@@ -174,8 +177,8 @@ const WithoutLib = () => {
           <div key={area.id}>
             <StyledClientCircle
               id={area.id}
-              top={area.coords[1] - 10}
-              left={area.coords[0] - 10}
+              top={area.coords[1] - 6}
+              left={area.coords[0] - 6}
               onClick={(e) => SelectClientCircle(e)}
             />
             {clientSpotMenuOpen && area.id === clientSelectedArea.id && (
