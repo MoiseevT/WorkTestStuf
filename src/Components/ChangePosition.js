@@ -1,38 +1,36 @@
 import React, { useState } from "react";
-import { useDropzone } from "react-dropzone";
 import styled from "styled-components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-const ImageDropZone = () => {
+const ChangePosition = ({images, setImages}) => {
 
-  const [images, setImages] = useState([]);
-  console.log(images);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: {
-      "image/*": [".png", ".gif", ".jpeg", ".jpg"],
-    },
-    onDrop: (acceptedFiles) => {
-      let setPreviewLinks = acceptedFiles.map((file, index) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-          position: images === 0 ? index : images.length + index,
-        })
-      );
-      setImages([...images, ...setPreviewLinks]);
-    },
-  });
-
+    console.log(images)
   const onDeletingImage = (e) => {
     let currentImageIndex = images.findIndex(
       (file) => file.preview === e.target.src
     );
-    images.splice(currentImageIndex, 1);
+    let xxxxxx = images.filter((o) => o.position !== images.splice(currentImageIndex, 1).position);
+    let AAAAAA = xxxxxx.map((file, index) =>
+        Object.assign(file, {
+            position: index
+        })
+    )
+    setImages(AAAAAA)
+    /*images.splice(currentImageIndex, 1);*/
   };
 
   const changeVariationImagePosition = (props) => {
-    console.log(props)
-    images.splice(props[1], 0, images.splice(props[0], 1)[0]);
+    images.splice(
+      props[1],
+      0,
+      images.splice(props[0], 1)[0]
+    );
+    let ChangeImagePosition = images.map((file, index) =>
+        Object.assign(file, {
+            position: index
+      })
+    )
+      setImages(ChangeImagePosition)
   };
 
   return (
@@ -44,19 +42,6 @@ const ImageDropZone = () => {
           changeVariationImagePosition([srcIndex, desIndex]);
         }}
       >
-        <DragImageAreaStyled {...getRootProps()}>
-          <input {...getInputProps()} />
-          <DragImageHeaderStyled>
-            Перетащите файлы или{" "}
-            <span style={{ color: "#7367F0", cursor: "pointer" }}>
-              {" "}
-              выберите
-            </span>
-          </DragImageHeaderStyled>
-          <DragImageWarningStyled>
-            Максимальный размер: 8 МБ
-          </DragImageWarningStyled>
-        </DragImageAreaStyled>
         <Droppable droppableId="droppable-1" direction="horizontal">
           {(provided) => (
             <ImagesPreviewContainerStyled
@@ -98,32 +83,13 @@ const ImageDropZone = () => {
   );
 };
 
-const DragImageAreaStyled = styled.div`
-  width: 500px;
-  height: 83px;
-  border: 1px dashed #ebe9f1;
-  border-radius: 6px;
-  background: #fafafc;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: default;
-`;
-
-const DragImageHeaderStyled = styled.div`
-  color: black;
-`;
-const DragImageWarningStyled = styled.div`
-  color: black;
-  margin-top: 4px;
-`;
 const ImagesPreviewContainerStyled = styled.div`
   width: 500px;
   height: 126px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  background-color: white;
 `;
 const ImageContainerStyled = styled.div`
   position: relative;
@@ -162,4 +128,4 @@ const AddImagesAreaStyled = styled.div`
   flex-direction: column;
 `;
 
-export default ImageDropZone;
+export default ChangePosition;
