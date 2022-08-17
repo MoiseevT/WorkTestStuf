@@ -183,8 +183,8 @@ const WithoutLib = () => {
             />
             {clientSpotMenuOpen && area.id === clientSelectedArea.id && (
               <ClientSpotMenuStyled
-                top={area.coords[1] - 80}
-                left={area.coords[0] - 35}
+                top={area.coords[1] - 75}
+                left={area.coords[0] - 30}
               ></ClientSpotMenuStyled>
             )}
           </div>
