@@ -16,28 +16,47 @@ const WithoutLib = () => {
   });
 
   const [adminSelectedArea, setAdminSelectedArea] = useState({});
+  const [adminSpotMenuOpen, setAdminSpotMenuOpen] = useState(false);
+  const [clientSelectedArea, setClientSelectedArea] = useState({});
+  const [clientSpotMenuOpen, setClientSpotMenuOpen] = useState(false);
   const [moveCircle, setMoveCircle] = useState({});
 
   const SetNewHotSpot = (e) => {
-    let areas = hotSpots.areas;
-    let setNewAreas = [
-      ...areas,
-      {
-        id: areas.length + 1,
-        coords: [e.nativeEvent.offsetX, e.nativeEvent.offsetY],
-      },
-    ];
-    let newHotspots = {
-      name: hotSpots.name,
-      areas: setNewAreas,
-    };
-    setHotSpots(newHotspots);
+    if (adminSpotMenuOpen) setAdminSpotMenuOpen(false);
+    else {
+      let areas = hotSpots.areas;
+      let setNewAreas = [
+        ...areas,
+        {
+          id: areas.length + 1,
+          coords: [e.nativeEvent.offsetX, e.nativeEvent.offsetY],
+        },
+      ];
+      let newHotspots = {
+        name: hotSpots.name,
+        areas: setNewAreas,
+      };
+      setHotSpots(newHotspots);
+    }
   };
 
-  const SelectCircle = (e) => {
+  const SelectAdminCircle = (e) => {
+    e.stopPropagation();
     setAdminSelectedArea(hotSpots.areas.find((spot) => spot.id == e.target.id));
+    setAdminSpotMenuOpen(false);
+    setAdminSpotMenuOpen(true);
   };
-
+  const SelectClientCircle = (e) => {
+    e.stopPropagation();
+    setClientSelectedArea(
+      clientHotSpots.areas.find((spot) => spot.id == e.target.id)
+    );
+    setClientSpotMenuOpen(false);
+    setClientSpotMenuOpen(true);
+  };
+  const ClientAreaClicked = () => {
+    setClientSpotMenuOpen(false);
+  }
   const PickCircle = (e) => {
     setMoveCircle(hotSpots.areas.find((spot) => spot.id == e.target.id));
   };
@@ -124,16 +143,23 @@ const WithoutLib = () => {
         }}
       >
         {hotSpots.areas.map((area) => (
-          <StyledAdminCircle
-            onDragStart={(e) => PickCircle(e)}
-            onDragEnd={(e) => SpotCirclePlace(e)}
-            draggable={true}
-            key={area.id}
-            id={area.id}
-            top={area.coords[1] - 15}
-            left={area.coords[0] - 15}
-            onClick={(e) => SelectCircle(e)}
-          />
+          <div key={area.id}>
+            <StyledAdminCircle
+              onDragStart={(e) => PickCircle(e)}
+              onDragEnd={(e) => SpotCirclePlace(e)}
+              draggable={true}
+              id={area.id}
+              top={area.coords[1] - 15}
+              left={area.coords[0] - 15}
+              onClick={(e) => SelectAdminCircle(e)}
+            />
+            {adminSpotMenuOpen && area.id === adminSelectedArea.id && (
+              <AdminSpotMenuStyled
+                top={area.coords[1] - 120}
+                left={area.coords[0] - 50}
+              ></AdminSpotMenuStyled>
+            )}
+          </div>
         ))}
       </AdminWrapperStyled>
       <ClientWrapperStyled
@@ -142,15 +168,23 @@ const WithoutLib = () => {
           marginLeft: "10px",
           backgroundImage: `url("https://latqvbedpllwqek.skdesign.ru/wp-content/uploads/2022/06/224239_289526484_348993037199526_6213266534771725691_n.jpg")`,
         }}
+        onClick={() => ClientAreaClicked()}
       >
         {clientHotSpots.areas.map((area) => (
-          <StyledClientCircle
-            key={area.id}
-            id={area.id}
-            top={area.coords[1] - 10}
-            left={area.coords[0] - 10}
-            onClick={(e) => SelectCircle(e)}
-          />
+          <div key={area.id}>
+            <StyledClientCircle
+              id={area.id}
+              top={area.coords[1] - 10}
+              left={area.coords[0] - 10}
+              onClick={(e) => SelectClientCircle(e)}
+            />
+            {clientSpotMenuOpen && area.id === clientSelectedArea.id && (
+              <ClientSpotMenuStyled
+                top={area.coords[1] - 80}
+                left={area.coords[0] - 35}
+              ></ClientSpotMenuStyled>
+            )}
+          </div>
         ))}
       </ClientWrapperStyled>
     </TestAreaStyled>
@@ -188,11 +222,27 @@ const StyledAdminCircle = styled.span`
   top: ${(props) => props.top + "px"};
   left: ${(props) => props.left + "px"};
 `;
+const AdminSpotMenuStyled = styled.div`
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  position: absolute;
+  top: ${(props) => props.top + "px"};
+  left: ${(props) => props.left + "px"};
+`;
 const StyledClientCircle = styled.span`
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   background-color: white;
   border-radius: 50%;
+  position: absolute;
+  top: ${(props) => props.top + "px"};
+  left: ${(props) => props.left + "px"};
+`;
+const ClientSpotMenuStyled = styled.div`
+  width: 60px;
+  height: 60px;
+  background-color: white;
   position: absolute;
   top: ${(props) => props.top + "px"};
   left: ${(props) => props.left + "px"};
