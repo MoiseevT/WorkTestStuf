@@ -6,9 +6,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 const App = () => {
   return (
-    <DndProvider backend={HTML5Backend}>
       <WithoutLib />
-    </DndProvider>
   );
 };
 
