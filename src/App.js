@@ -1,20 +1,18 @@
-import WithLib from "./Components/WithLib";
-import WithoutLib from "./Components/WithoutLib";
-import ChangePosition from "./Components/ChangePosition";
-import LoginTest from "./Components/LoginTest";
+import WithLib from "./Components/ImageHotspots/WithLib";
+import WithoutLib from "./Components/ImageHotspots/WithoutLib";
+import ChangePosition from "./Components/DNDImages/ChangePosition";
+import LoginTest from "./Components/LoginTest/LoginTest";
 import { useState } from "react";
-import DropZoneTest from "./Components/DropZoneTest";
+import DropZoneTest from "./Components/DNDImages/DropZoneTest";
 import styled from "styled-components";
 
 const App = () => {
 
-  const [images, setImages] = useState([]);
-  console.log(images)
+    // for DND test, don't forget to pass
+  /*const [images, setImages] = useState([]);*/
+
   return (
-    <ContainerStyled>
-      <ChangePosition images={images} setImages={setImages} />
-      <DropZoneTest images={images} setImages={setImages}/>
-    </ContainerStyled>
+    <LoginTest/>
   );
 };
 

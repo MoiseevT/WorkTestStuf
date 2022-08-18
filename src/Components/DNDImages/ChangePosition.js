@@ -4,19 +4,17 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 const ChangePosition = ({images, setImages}) => {
 
-    console.log(images)
   const onDeletingImage = (e) => {
     let currentImageIndex = images.findIndex(
       (file) => file.preview === e.target.src
     );
-    let xxxxxx = images.filter((o) => o.position !== images.splice(currentImageIndex, 1).position);
-    let AAAAAA = xxxxxx.map((file, index) =>
+    images.splice(currentImageIndex, 1)
+    let changePositionNumbers = images.map((file, index) =>
         Object.assign(file, {
             position: index
         })
     )
-    setImages(AAAAAA)
-    /*images.splice(currentImageIndex, 1);*/
+    setImages(changePositionNumbers)
   };
 
   const changeVariationImagePosition = (props) => {
@@ -25,12 +23,12 @@ const ChangePosition = ({images, setImages}) => {
       0,
       images.splice(props[0], 1)[0]
     );
-    let ChangeImagePosition = images.map((file, index) =>
+    let changePositionNumbers = images.map((file, index) =>
         Object.assign(file, {
             position: index
       })
     )
-      setImages(ChangeImagePosition)
+      setImages(changePositionNumbers)
   };
 
   return (
