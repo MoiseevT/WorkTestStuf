@@ -5,6 +5,7 @@ import LoginTest from "./Components/LoginTest/LoginTest";
 import { useState } from "react";
 import DropZoneTest from "./Components/DNDImages/DropZoneTest";
 import styled from "styled-components";
+import Routess from "./Components/LoginTest/Routes";
 
 const App = () => {
 
@@ -12,7 +13,7 @@ const App = () => {
   /*const [images, setImages] = useState([]);*/
 
   return (
-    <LoginTest/>
+    <Routess/>
   );
 };
 
