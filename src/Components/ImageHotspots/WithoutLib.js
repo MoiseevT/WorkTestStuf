@@ -177,8 +177,8 @@ const WithoutLib = () => {
           <div key={area.id}>
             <StyledClientCircle
               id={area.id}
-              top={area.coords[1] - 6}
-              left={area.coords[0] - 6}
+              top={area.coords[1] - 7}
+              left={area.coords[0] - 7}
               onClick={(e) => SelectClientCircle(e)}
             />
             {clientSpotMenuOpen && area.id === clientSelectedArea.id && (
@@ -207,14 +207,14 @@ const AdminWrapperStyled = styled.div`
   height: 625px;
   display: flex;
   position: relative;
-  background-size: cover;
+  background-size: 100% 100%;
 `;
 const ClientWrapperStyled = styled.div`
   width: 300px;
-  height: 375px;
+  height: 300px;
   display: flex;
   position: relative;
-  background-size: cover;
+  background-size: 100% 100%;
 `;
 const StyledAdminCircle = styled.span`
   width: 30px;
