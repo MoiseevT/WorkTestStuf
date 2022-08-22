@@ -10,9 +10,10 @@ const Routess = () => {
     <BrowserRouter history={history}>
       <Routes>
         <Route
-          element={<RouteGuard token="user token" routeRedirect={"/login"} />}
+          element={<RouteGuard token="token" routeRedirect={"/login"} />}
         />
         <Route path="/login" element={<LoginTest />} />
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </BrowserRouter>
   );

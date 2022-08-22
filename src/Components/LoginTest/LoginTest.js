@@ -13,21 +13,9 @@ import { guid, Users } from "./Data";
 
 const LoginTest = () => {
   const [error, setError] = useState(null);
-  const [sentUserData, setSentUserData] = useState({
-    login: null,
-    password: null,
-    userDevice: null,
-  });
   const [providedUserData, setProvidedUserData] = useState({
     login: "",
     password: "",
-  });
-  const [verifiedBackendUserData, setVerifiedBackendUserData] = useState({
-    login: null,
-    password: null,
-    accessToken: null,
-    refreshToken: null,
-    userDevice: null,
   });
   const [verifiedClientUserData, setVerifiedClientUserData] = useState({
     login: null,
@@ -35,7 +23,10 @@ const LoginTest = () => {
     accessToken: null,
     refreshToken: null,
     userDevice: null,
+    name: null
   });
+  console.log(localStorage)
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const onSettingLogin = (e) => {
@@ -72,68 +63,62 @@ const LoginTest = () => {
     else if (providedUserData.login.length === 0) setError("No Login");
     else if (providedUserData.password.length === 0) setError("No Password");
     else {
-      setError("Waiting4Response");
       let newSentData = Object.assign(providedUserData, {
         userDevice: deviceInfo,
       });
-      setSentUserData(newSentData);
+      let userLoginAttempt = {
+        login: Users.find((user) => user.login === newSentData.login)?.login,
+        password: Users.find((user) => user.password === newSentData.password)
+          ?.password,
+        userDevice: newSentData.userDevice,
+        name: Users.find((user) => user.login === newSentData.login)?.name
+      };
+      if (
+        userLoginAttempt.login !== newSentData.login &&
+        userLoginAttempt.password !== newSentData.password
+      ) {
+        setError("WrongData");
+      } else if (
+        userLoginAttempt.login === newSentData.login &&
+        userLoginAttempt.password === newSentData.password
+      ) {
+        let response = {
+          login: userLoginAttempt.login,
+          password: userLoginAttempt.password,
+          userDevice: userLoginAttempt.userDevice,
+          name: userLoginAttempt.name,
+          accessToken: guid(),
+          refreshToken: guid(),
+        };
+        setVerifiedClientUserData(response);
+        let userData = {
+          "token": `${response.accessToken}`,
+          "name": `${response.name}`
+        }
+        localStorage.setItem("UserData", JSON.stringify(userData));
+        setError(null);
+        setIsLoggedIn(true);
+      }
     }
   };
 
-  const onAuthorizationCheck = () => {
-    let userLoginAttempt = {
-      login: Users.find((user) => user?.login === sentUserData?.login)?.login,
-      password: Users.find((user) => user?.password === sentUserData?.password)
-        ?.password,
-      userDevice: sentUserData.userDevice,
-    };
-    if (userLoginAttempt.login === undefined) setError("LoginUndefined");
-    else if (userLoginAttempt.password === undefined)
-      setError("PasswordUndefined");
-    else if (
-      userLoginAttempt.login === sentUserData.login &&
-      userLoginAttempt.password === sentUserData.password
-    ) {
-      setError("Waiting4Send");
-      let response = {
-        login: userLoginAttempt.login,
-        password: userLoginAttempt.password,
-        userDevice: userLoginAttempt.userDevice,
-        accessToken: guid(),
-        refreshToken: guid(),
-      };
-      setVerifiedBackendUserData(response);
-    }
-  };
-  const onGetResponse = () => {
-    if (verifiedBackendUserData.password?.length > 0) {
-      setError(null);
-      setVerifiedClientUserData(verifiedBackendUserData);
-      setIsLoggedIn(true);
-    } else setError("TooEarly");
-  };
   const onLogout = () => {
-    setIsLoggedIn(false)
+    setIsLoggedIn(false);
     let defaultProvidedData = {
       login: "",
       password: "",
-    }
+    };
     let defaultVerifiedClientUserData = {
       login: null,
       password: null,
       accessToken: null,
       refreshToken: null,
       userDevice: null,
-    }
-    let defaultSentUserData = {
-      login: null,
-      password: null,
-      userDevice: null,
-    }
-    setVerifiedClientUserData(defaultVerifiedClientUserData)
-    setProvidedUserData(defaultProvidedData)
-    setSentUserData(defaultSentUserData)
-  }
+    };
+    setVerifiedClientUserData(defaultVerifiedClientUserData);
+    setProvidedUserData(defaultProvidedData);
+  };
+
   return (
     <LoginTestStyled>
       <AuthorizationBlockStyled>
@@ -148,40 +133,22 @@ const LoginTest = () => {
           onChange={(e) => onSettingPassword(e)}
         />
         <ConditionSpanStyled>
-          {isLoggedIn && error === null ? (
-            <p style={{ color: "green" }}>ЧЕЛ ТЫ ЗАЛОГИНЕН</p>
-          ) : !isLoggedIn && error === null ? (
-            "ЧЕЛ ТЫ НЕ ЗАЛОГИНЕН"
-          ) : error === "No Data" ? (
-            "ЧЕЛ ВВЕДИ ДАННЫЕ"
-          ) : error === "No Login" ? (
-            "ЧЕЛ ВВЕДИ ЛОГИН"
-          ) : error === "No Password" ? (
-            "ЧЕЛ ВВЕДИ ПАРОЛЬ"
-          ) : error === "Waiting4Response" ? (
-            "ЧЕЛ НАЖМИ ПРОВЕРИТЬ"
-          ) : error === "LoginUndefined" ? (
-            "ЧЕЛ ЛОГИН НЕ ВЕРНЫЙ"
-          ) : error === "PasswordUndefined" ? (
-            "ЧЕЛ ПАРОЛЬ НЕ ВЕРНЫЙ"
-          ) : error === "Waiting4Send" ? (
-            "ЧЕЛ НАЖМИ ОТПРАВИТЬ"
-          ) : error === "TooEarly" ? (
-            "Эй дружок-пирожок, тобою выбрана неправильная дверь, клуб кожевенного мастерства двумя этажами выше"
-          ) : null}
+          {!isLoggedIn && error === null
+            ? "ЧЕЛ ТЫ НЕ ЗАЛОГИНЕН"
+            : error === "No Data"
+            ? "ЧЕЛ ВВЕДИ ДАННЫЕ"
+            : error === "No Login"
+            ? "ЧЕЛ ВВЕДИ ЛОГИН"
+            : error === "No Password"
+            ? "ЧЕЛ ВВЕДИ ПАРОЛЬ"
+            : error === "WrongData"
+            ? "Все херня, переделывай"
+            : null}
         </ConditionSpanStyled>
         <AuthorizationButtonStyled onClick={isLoggedIn ? null : onSentUserData}>
           Логин
         </AuthorizationButtonStyled>
-        <AuthorizationButtonStyled onClick={isLoggedIn ? onLogout : null}>Логаут</AuthorizationButtonStyled>
-        <AuthorizationButtonStyled
-          onClick={isLoggedIn ? null : onAuthorizationCheck}
-        >
-          Проверить данные
-        </AuthorizationButtonStyled>
-        <AuthorizationButtonStyled onClick={isLoggedIn ? null : onGetResponse}>
-          Отправить ответ
-        </AuthorizationButtonStyled>
+        {/*<AuthorizationButtonStyled onClick={isLoggedIn ? onLogout : null}>Логаут</AuthorizationButtonStyled>*/}
       </AuthorizationBlockStyled>
     </LoginTestStyled>
   );

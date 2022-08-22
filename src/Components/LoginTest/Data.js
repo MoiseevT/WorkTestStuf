@@ -1,11 +1,23 @@
 export const Users = [
   {
-    login: "admin",
-    password: "admin",
+    login: "Timur",
+    password: "Timur",
+    name: "Тимур"
   },
   {
-    login: "pepega",
-    password: "pepega",
+    login: "Oleg",
+    password: "Oleg",
+    name: "Олег"
+  },
+  {
+    login: "Kiril",
+    password: "Kirill",
+    name: "Кирилл"
+  },
+  {
+    login: "Alina",
+    password: "Alina",
+    name: "Алина"
   },
 ];
 
